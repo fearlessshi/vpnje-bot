@@ -1,0 +1,19 @@
+## available command ##
+/ovpn_online
+/ovpn_info <username>
+/ovpn_add <username> <password> <days>
+/ovpn_renew <username> <days>
+/ovpn_block <username>
+/ovpn_unblock <username>
+/ovpn_del <username>
+/ovpn_reset <username> <new password>
+/ovpn_block_test
+
+## example ##
+/ovpn_info test
+/ovpn_add testje 291220 31
+/ovpn_renew testje 31
+/ovpn_block testje
+/ovpn_unblock testje
+/ovpn_del testje
+/ovpn_reset testje newpass
