@@ -19,7 +19,8 @@ const conn = mysql.createConnection({
     host        : process.env.DB_HOST,
     user        : process.env.DB_USER,
     password    : process.env.DB_PASS,
-    database    : process.env.DB_DATABASE
+    database    : process.env.DB_DATABASE,
+    multipleStatements: true
 });
 
 conn.connect((err) => {
@@ -58,7 +59,7 @@ bot.onText(/\/ovpn_info (.+)/, (msg, match) => {
     conn.query("SELECT user_name, user_online, user_enable, user_start_date, user_end_date FROM user WHERE user_name = ?", [userName], (err, result) => {
         if (err) throw err;
 
-        console.log(result);
+        // console.log(result);
 
         if (result.length === 0) {
             bot.sendMessage(chatId, "user not exist!");
@@ -194,5 +195,20 @@ bot.onText(/\/ovpn_reset (.+) (.+)/, (msg, match) => {
         console.log(result);
     
         bot.sendMessage(chatId, 'Reset password success');
+    });
+});
+
+// Block all test account
+bot.onText(/\/ovpn_block_test/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    // console.log(userPass);
+
+    conn.query("UPDATE user SET user_enable = 0 WHERE user_name = 'test'; UPDATE user SET user_enable = 0 WHERE user_name = 'test2'; UPDATE user SET user_enable = 0 WHERE user_name = 'test3'; UPDATE user SET user_enable = 0 WHERE user_name = 'test4'", (err, result) => {
+        if (err) throw err;
+
+        // console.log(result);
+    
+        bot.sendMessage(chatId, 'All test acc blocked');
     });
 });
