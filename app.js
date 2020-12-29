@@ -27,7 +27,7 @@ conn.connect((err) => {
         console.log("Error connection: " + err.stack);
     }
 
-    console.log("Connected as: " + conn.threadId);
+    // console.log("Connected as: " + conn.threadId);
 });
 
 // Get online user
@@ -186,7 +186,9 @@ bot.onText(/\/ovpn_reset (.+) (.+)/, (msg, match) => {
     let userName = match[1];
     let userPass = match[2];
 
-    conn.query("UPDATE user SET user_pass = AES_ENCRYPT(?, 'vpnje') WHERE user_name = ?", [userName, userPass], (err, result) => {
+    // console.log(userPass);
+
+    conn.query("UPDATE user SET user_pass = AES_ENCRYPT(?, 'vpnje') WHERE user_name = ?", [userPass, userName], (err, result) => {
         if (err) throw err;
 
         console.log(result);
@@ -194,22 +196,3 @@ bot.onText(/\/ovpn_reset (.+) (.+)/, (msg, match) => {
         bot.sendMessage(chatId, 'Reset password success');
     });
 });
-
-
-// conn.query({
-//     sql: "SELECT HEX(user_pass) AS pass FROM user WHERE user_name = ?",
-//     values: ['himaris']
-// }, (err, result) => {
-//     if (err) throw err;
-
-//     Object.keys(result).forEach((key) => {
-//         let row = result[key];
-//         let pass = aes.decrypt(row.pass, process.env.SECRET);
-//         // console.log(aes.decrypt(row.pass, process.env.SECRET));
-
-//         bot.sendMessage('73804219', 'Your Passoword is \n'
-//             + 'Username: Himaris \n'
-//             + 'Password: ' + pass + '\n'
-//         );
-//     });
-// });
