@@ -1,0 +1,9 @@
+[Unit]
+Description=Vpnje bot service.
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/nodejs /root/vpnje-bot/app.js
+
+[Install]
+WantedBy=multi-user.target
