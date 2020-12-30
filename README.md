@@ -21,3 +21,8 @@ Basic mysql crud to manage my openvpn server
 2. `systemctl daemon-reload`
 3. `systemctl enable vpnje-bot`
 4. `systemctl start vpnje-bot`
+
+### Todo list
+1. nodejs error handling
+2. allow bot for admin or group use only
+3. wireguard support
