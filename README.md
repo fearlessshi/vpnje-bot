@@ -23,6 +23,6 @@ Basic mysql crud to manage my openvpn server
 4. `systemctl start vpnje-bot`
 
 ### Todo list
-1. nodejs error handling
-2. allow bot for admin or group use only
-3. wireguard support
+- [x] nodejs error handling
+- [] allow bot for admin or group use only
+- [] wireguard support
