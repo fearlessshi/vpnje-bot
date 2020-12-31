@@ -24,5 +24,5 @@ Basic mysql crud to manage my openvpn server
 
 ### Todo list
 - [x] nodejs error handling
-- [] allow bot for admin or group use only
-- [] wireguard support
+- [ ] allow bot for admin or group use only
+- [ ] wireguard support
