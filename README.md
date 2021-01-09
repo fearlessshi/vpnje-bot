@@ -24,5 +24,8 @@ Basic mysql crud to manage my openvpn server
 
 ### Todo list
 - [x] nodejs error handling
+- [x] wireguard support
+- [x] v2ray support
+- [ ] check username before add new user
 - [ ] allow bot for admin or group use only
-- [ ] wireguard support
+
