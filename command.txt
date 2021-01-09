@@ -9,6 +9,14 @@
 /ovpn_reset <username> <new password>
 /ovpn_block_test
 
+/wg_info <username>
+/wg_add <username> <days>
+/wg_renew <username> <days>
+
+/v2_info <username>
+/v2_add <username> <days>
+/v2_renew <username> <days>
+
 ## example ##
 /ovpn_info test
 /ovpn_add testje 291220 31
