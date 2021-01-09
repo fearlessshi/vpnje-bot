@@ -1,5 +1,4 @@
 const mysql = require('mysql');
-const aes = require('mysql-aes');
 const moment = require('moment');
 const TelegramBot = require('node-telegram-bot-api');
 
@@ -241,6 +240,92 @@ bot.onText(/\/ovpn_block_test/, (msg, match) => {
             // console.log(result);
         
             bot.sendMessage(chatId, 'All test acc blocked');
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+
+// Wireguard
+
+// Get user info
+bot.onText(/\/wg_info (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let userName = match[1];
+
+    try {
+        conn.query("SELECT * FROM wireguard WHERE user_name = ?", [userName], (err, result) => {
+            if (err) throw err;
+    
+            // console.log(result);
+    
+            if (result.length === 0) {
+                bot.sendMessage(chatId, "user not exist!");
+            } else {
+                Object.keys(result).forEach((key) => {
+                    let row = result[key];
+        
+                    bot.sendMessage(chatId, '## Wireguard user info ## \n'
+                            + 'Username: ' + row.user_name + '\n'
+                            + 'Start Date: ' + moment(row.user_start_date).format("YYYY-MM-DD") + '\n'
+                            + 'Expired Date: ' + moment(row.user_end_date).format("YYYY-MM-DD"));
+                });
+            }
+        
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// Register new user
+bot.onText(/\/wg_add (.+) (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let userName = match[1];
+    let day = match[2];
+    let today = moment().format("YYYY-MM-DD");
+    let expired = moment().add(day, 'days').format("YYYY-MM-DD");
+
+    try {
+        conn.query({
+            sql: "INSERT INTO wireguard (user_name, user_start_date, user_end_date) VALUES (?, ?, ?)",
+            values: [userName, today, expired]
+        }, (err, result) => {
+            if (err) throw err;
+            // console.log(result);
+        
+            bot.sendMessage(chatId, '## Register success ## \n'
+                        + 'Username: ' + userName + '\n'
+                        + 'Start Date: ' + today + '\n'
+                        + 'Expired Date: ' + expired);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// Renew user
+bot.onText(/\/wg_renew (.+) (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let userName = match[1];
+    let day = match[2];
+    let today = moment().format("YYYY-MM-DD");
+    let expired = moment().add(day, 'days').format("YYYY-MM-DD");
+
+    try {
+        conn.query("UPDATE wireguard SET user_start_date = ?, user_end_date = ? WHERE user_name = ?", [today, expired, userName], (err, result) => {
+            if (err) throw err;
+    
+            // console.log(result);
+        
+            bot.sendMessage(chatId, '## Renew success ## \n'
+                        + 'Username: ' + userName + '\n'
+                        + 'Start Date: ' + today + '\n'
+                        + 'Expired Date: ' + expired);
         });
     } catch (error) {
         console.log(error);
