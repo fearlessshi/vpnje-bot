@@ -12,10 +12,12 @@
 /wg_info <username>
 /wg_add <username> <days>
 /wg_renew <username> <days>
+/wg_del <username>
 
 /v2_info <username>
 /v2_add <username> <days>
 /v2_renew <username> <days>
+/v2_del <username>
 
 ## example ##
 /ovpn_info test
