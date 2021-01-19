@@ -79,7 +79,7 @@ bot.onText(/\/ovpn_info (.+)/, (msg, match) => {
                         endDate = moment(row.user_end_date).format("YYYY-MM-DD");
                     }
         
-                    bot.sendMessage(chatId, '## User info ## \n'
+                    bot.sendMessage(chatId, '## Ovpn user info ## \n'
                             + 'Username: ' + row.user_name + '\n'
                             + 'Online: ' + row.user_online + '\n'
                             + 'Enable: ' + row.user_enable + '\n'
@@ -105,18 +105,29 @@ bot.onText(/\/ovpn_add (.+) (.+) (.+)/, (msg, match) => {
     let expired = moment().add(day, 'days').format("YYYY-MM-DD");
 
     try {
-        conn.query({
-            sql: "INSERT INTO user (user_name, user_pass, user_start_date, user_end_date) VALUES (?, AES_ENCRYPT(?, 'vpnje'), ?, ?)",
-            values: [userName, userPass, today, expired]
-        }, (err, result) => {
+        conn.query("SELECT user_name FROM user WHERE user_name = ?", [userName], (err, result) => {
             if (err) throw err;
+    
             // console.log(result);
+    
+            if (result.length === 0) {
+                conn.query({
+                    sql: "INSERT INTO user (user_name, user_pass, user_start_date, user_end_date) VALUES (?, AES_ENCRYPT(?, 'vpnje'), ?, ?)",
+                    values: [userName, userPass, today, expired]
+                }, (err, result) => {
+                    if (err) throw err;
+                    // console.log(result);
+                
+                    bot.sendMessage(chatId, '## Ovpn register success ## \n'
+                                + 'Username: ' + userName + '\n'
+                                + 'Password: ' + userPass + '\n'
+                                + 'Start Date: ' + today + '\n'
+                                + 'Expired Date: ' + expired);
+                });
+            } else {
+                bot.sendMessage(chatId, "Username taken");
+            }
         
-            bot.sendMessage(chatId, '## Register success ## \n'
-                        + 'Username: ' + userName + '\n'
-                        + 'Password: ' + userPass + '\n'
-                        + 'Start Date: ' + today + '\n'
-                        + 'Expired Date: ' + expired);
         });
     } catch (error) {
         console.log(error);
@@ -297,7 +308,7 @@ bot.onText(/\/wg_add (.+) (.+)/, (msg, match) => {
             if (err) throw err;
             // console.log(result);
         
-            bot.sendMessage(chatId, '## Register success ## \n'
+            bot.sendMessage(chatId, '## Wireguard register success ## \n'
                         + 'Username: ' + userName + '\n'
                         + 'Start Date: ' + today + '\n'
                         + 'Expired Date: ' + expired);
@@ -326,6 +337,25 @@ bot.onText(/\/wg_renew (.+) (.+)/, (msg, match) => {
                         + 'Username: ' + userName + '\n'
                         + 'Start Date: ' + today + '\n'
                         + 'Expired Date: ' + expired);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// Delete user
+bot.onText(/\/wg_del (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let userName = match[1];
+
+    try {
+        conn.query("DELETE FROM wireguard WHERE user_name = ?", [userName], (err, result) => {
+            if (err) throw err;
+    
+            // console.log(result);
+        
+            bot.sendMessage(chatId, 'User ' + userName + ' removed!');
         });
     } catch (error) {
         console.log(error);
@@ -411,6 +441,25 @@ bot.onText(/\/v2_renew (.+) (.+)/, (msg, match) => {
                         + 'Username: ' + userName + '\n'
                         + 'Start Date: ' + today + '\n'
                         + 'Expired Date: ' + expired);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// Delete user
+bot.onText(/\/v2_del (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let userName = match[1];
+
+    try {
+        conn.query("DELETE FROM v2ray WHERE user_name = ?", [userName], (err, result) => {
+            if (err) throw err;
+    
+            // console.log(result);
+        
+            bot.sendMessage(chatId, 'User ' + userName + ' removed!');
         });
     } catch (error) {
         console.log(error);
