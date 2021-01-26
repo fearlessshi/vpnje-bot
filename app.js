@@ -422,24 +422,30 @@ bot.onText(/\/v2_add (.+) (.+)/, (msg, match) => {
     let expired = moment().add(day, 'days').format("YYYY-MM-DD");
 
     try {
-        if (result.length === 0) {
-            conn.query({
-                sql: "INSERT INTO v2ray (user_name, user_start_date, user_end_date) VALUES (?, ?, ?)",
-                values: [userName, today, expired]
-            }, (err, result) => {
-                if (err) throw err;
-                // console.log(result);
-            
-                bot.sendMessage(chatId, '## V2ray Register success ## \n'
-                            + 'Username: ' + userName + '\n'
-                            + 'Start Date: ' + today + '\n'
-                            + 'Expired Date: ' + expired + '\n'
-                            + 'Support Group: ' + process.env.GROUP);
-            });
-        } else {
-            bot.sendMessage(chatId, "Username exist");
-        }
-
+        conn.query("SELECT * FROM v2ray WHERE user_name = ?", [userName], (err, result) => {
+            if (err) throw err;
+    
+            // console.log(result);
+    
+            if (result.length === 0) {
+                conn.query({
+                    sql: "INSERT INTO v2ray (user_name, user_start_date, user_end_date) VALUES (?, ?, ?)",
+                    values: [userName, today, expired]
+                }, (err, result) => {
+                    if (err) throw err;
+                    // console.log(result);
+                
+                    bot.sendMessage(chatId, '## V2ray Register success ## \n'
+                                + 'Username: ' + userName + '\n'
+                                + 'Start Date: ' + today + '\n'
+                                + 'Expired Date: ' + expired + '\n'
+                                + 'Support Group: ' + process.env.GROUP);
+                });
+            } else {
+                bot.sendMessage(chatId, "Username exist");
+            }
+        
+        });
     } catch (error) {
         console.log(error);
     }
