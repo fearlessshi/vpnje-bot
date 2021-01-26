@@ -422,7 +422,6 @@ bot.onText(/\/v2_add (.+) (.+)/, (msg, match) => {
     let expired = moment().add(day, 'days').format("YYYY-MM-DD");
 
     try {
-
         if (result.length === 0) {
             conn.query({
                 sql: "INSERT INTO v2ray (user_name, user_start_date, user_end_date) VALUES (?, ?, ?)",
@@ -438,7 +437,7 @@ bot.onText(/\/v2_add (.+) (.+)/, (msg, match) => {
                             + 'Support Group: ' + process.env.GROUP);
             });
         } else {
-
+            bot.sendMessage(chatId, "Username exist");
         }
 
     } catch (error) {
