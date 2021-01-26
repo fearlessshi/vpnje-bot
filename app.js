@@ -2,10 +2,10 @@ const mysql = require('mysql');
 const moment = require('moment');
 const TelegramBot = require('node-telegram-bot-api');
 
-require('dotenv').config({path: __dirname + '/.env'})
+require('dotenv').config({path: __dirname + '/.env'});
 
 // Set telegram bot API KEY
-const token = process.env.BOT_TOKEN
+const token = process.env.BOT_TOKEN;
 
 // Set Admin ID
 // let adminUsername = process.env.ADMIN.split(",");
@@ -22,13 +22,17 @@ const conn = mysql.createConnection({
     multipleStatements: true
 });
 
-conn.connect((err) => {
-    if (err) {
-        console.log("Error connection: " + err.stack);
-    }
-
-    // console.log("Connected as: " + conn.threadId);
-});
+try {
+    conn.connect((err) => {
+        if (err) {
+            console.log("Error connection: " + err.stack);
+        }
+    
+        // console.log("Connected as: " + conn.threadId);
+    });
+} catch (err) {
+    console.log(error);
+}
 
 // Get online user
 bot.onText(/\/ovpn_online/, (msg, match) => {
@@ -122,7 +126,8 @@ bot.onText(/\/ovpn_add (.+) (.+) (.+)/, (msg, match) => {
                                 + 'Username: ' + userName + '\n'
                                 + 'Password: ' + userPass + '\n'
                                 + 'Start Date: ' + today + '\n'
-                                + 'Expired Date: ' + expired);
+                                + 'Expired Date: ' + expired + '\n'
+                                + 'Support Group: ' + process.env.GROUP);
                 });
             } else {
                 bot.sendMessage(chatId, "Username taken");
@@ -149,7 +154,7 @@ bot.onText(/\/ovpn_renew (.+) (.+)/, (msg, match) => {
     
             // console.log(result);
         
-            bot.sendMessage(chatId, '## Renew success ## \n'
+            bot.sendMessage(chatId, '## Ovpn renew success ## \n'
                         + 'Username: ' + userName + '\n'
                         + 'Start Date: ' + today + '\n'
                         + 'Expired Date: ' + expired);
@@ -171,7 +176,7 @@ bot.onText(/\/ovpn_block (.+)/, (msg, match) => {
     
             // console.log(result);
         
-            bot.sendMessage(chatId, 'User ' + userName + ' blocked!');
+            bot.sendMessage(chatId, 'Ovpn User: ' + userName + ' blocked!');
         });
     } catch (error) {
         console.log(error);
@@ -190,7 +195,7 @@ bot.onText(/\/ovpn_unblock (.+)/, (msg, match) => {
     
             // console.log(result);
         
-            bot.sendMessage(chatId, 'User ' + userName + ' unblocked!');
+            bot.sendMessage(chatId, 'Ovpn User: ' + userName + ' unblocked!');
         });
     } catch (error) {
         console.log(error);
@@ -209,7 +214,7 @@ bot.onText(/\/ovpn_del (.+)/, (msg, match) => {
     
             // console.log(result);
         
-            bot.sendMessage(chatId, 'User ' + userName + ' removed!');
+            bot.sendMessage(chatId, 'Ovpn User: ' + userName + ' removed!');
         });
     } catch (error) {
         console.log(error);
@@ -231,7 +236,7 @@ bot.onText(/\/ovpn_reset (.+) (.+)/, (msg, match) => {
     
             console.log(result);
         
-            bot.sendMessage(chatId, 'Reset password success');
+            bot.sendMessage(chatId, 'Reset Ovpn password success');
         });
     } catch (error) {
         console.log(error);
@@ -301,17 +306,29 @@ bot.onText(/\/wg_add (.+) (.+)/, (msg, match) => {
     let expired = moment().add(day, 'days').format("YYYY-MM-DD");
 
     try {
-        conn.query({
-            sql: "INSERT INTO wireguard (user_name, user_start_date, user_end_date) VALUES (?, ?, ?)",
-            values: [userName, today, expired]
-        }, (err, result) => {
+        conn.query("SELECT * FROM wireguard WHERE user_name = ?", [userName], (err, result) => {
             if (err) throw err;
+    
             // console.log(result);
+    
+            if (result.length === 0) {
+                conn.query({
+                    sql: "INSERT INTO wireguard (user_name, user_start_date, user_end_date) VALUES (?, ?, ?)",
+                    values: [userName, today, expired]
+                }, (err, result) => {
+                    if (err) throw err;
+                    // console.log(result);
+                
+                    bot.sendMessage(chatId, '## Wireguard register success ## \n'
+                                + 'Username: ' + userName + '\n'
+                                + 'Start Date: ' + today + '\n'
+                                + 'Expired Date: ' + expired + '\n'
+                                + 'Support Group: ' + process.env.GROUP);
+                });
+            } else {
+                bot.sendMessage(chatId, "Username exist");
+            }
         
-            bot.sendMessage(chatId, '## Wireguard register success ## \n'
-                        + 'Username: ' + userName + '\n'
-                        + 'Start Date: ' + today + '\n'
-                        + 'Expired Date: ' + expired);
         });
     } catch (error) {
         console.log(error);
@@ -333,7 +350,7 @@ bot.onText(/\/wg_renew (.+) (.+)/, (msg, match) => {
     
             // console.log(result);
         
-            bot.sendMessage(chatId, '## Renew success ## \n'
+            bot.sendMessage(chatId, '## Wireguard renew success ## \n'
                         + 'Username: ' + userName + '\n'
                         + 'Start Date: ' + today + '\n'
                         + 'Expired Date: ' + expired);
@@ -355,7 +372,7 @@ bot.onText(/\/wg_del (.+)/, (msg, match) => {
     
             // console.log(result);
         
-            bot.sendMessage(chatId, 'User ' + userName + ' removed!');
+            bot.sendMessage(chatId, 'Wireguard User: ' + userName + ' removed!');
         });
     } catch (error) {
         console.log(error);
@@ -405,18 +422,25 @@ bot.onText(/\/v2_add (.+) (.+)/, (msg, match) => {
     let expired = moment().add(day, 'days').format("YYYY-MM-DD");
 
     try {
-        conn.query({
-            sql: "INSERT INTO v2ray (user_name, user_start_date, user_end_date) VALUES (?, ?, ?)",
-            values: [userName, today, expired]
-        }, (err, result) => {
-            if (err) throw err;
-            // console.log(result);
-        
-            bot.sendMessage(chatId, '## V2ray Register success ## \n'
-                        + 'Username: ' + userName + '\n'
-                        + 'Start Date: ' + today + '\n'
-                        + 'Expired Date: ' + expired);
-        });
+
+        if (result.length === 0) {
+            conn.query({
+                sql: "INSERT INTO v2ray (user_name, user_start_date, user_end_date) VALUES (?, ?, ?)",
+                values: [userName, today, expired]
+            }, (err, result) => {
+                if (err) throw err;
+                // console.log(result);
+            
+                bot.sendMessage(chatId, '## V2ray Register success ## \n'
+                            + 'Username: ' + userName + '\n'
+                            + 'Start Date: ' + today + '\n'
+                            + 'Expired Date: ' + expired + '\n'
+                            + 'Support Group: ' + process.env.GROUP);
+            });
+        } else {
+
+        }
+
     } catch (error) {
         console.log(error);
     }
