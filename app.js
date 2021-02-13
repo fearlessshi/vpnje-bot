@@ -495,3 +495,122 @@ bot.onText(/\/v2_del (.+)/, (msg, match) => {
         console.log(error);
     }
 });
+
+
+// Trojan
+// Get user info
+bot.onText(/\/tr_info (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let userName = match[1];
+
+    try {
+        conn.query("SELECT * FROM trojan WHERE user_name = ?", [userName], (err, result) => {
+            if (err) throw err;
+    
+            // console.log(result);
+    
+            if (result.length === 0) {
+                bot.sendMessage(chatId, "user not exist!");
+            } else {
+                Object.keys(result).forEach((key) => {
+                    let row = result[key];
+        
+                    bot.sendMessage(chatId, '## Trojan user info ## \n'
+                            + 'Username: ' + row.user_name + '\n'
+                            + 'Start Date: ' + moment(row.user_start_date).format("YYYY-MM-DD") + '\n'
+                            + 'Expired Date: ' + moment(row.user_end_date).format("YYYY-MM-DD"));
+                });
+            }
+        
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// Register new user
+bot.onText(/\/tr_add (.+) (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let userName = match[1];
+    let day = match[2];
+    let link = `trojan://${userName}@tr01.vpnje.com:443`;
+    let today = moment().format("YYYY-MM-DD");
+    let expired = moment().add(day, 'days').format("YYYY-MM-DD");
+
+    try {
+        conn.query("SELECT * FROM trojan WHERE user_name = ?", [userName], (err, result) => {
+            if (err) throw err;
+    
+            // console.log(result);
+    
+            if (result.length === 0) {
+                conn.query({
+                    sql: "INSERT INTO trojan (user_name, user_start_date, user_end_date, user_link) VALUES (?, ?, ?, ?)",
+                    values: [userName, today, expired, link]
+                }, (err, result) => {
+                    if (err) throw err;
+                    // console.log(result);
+                
+                    bot.sendMessage(chatId, '## Trojan registration success ## \n'
+                                + 'Username: ' + userName + '\n'
+                                + 'Start Date: ' + today + '\n'
+                                + 'Expired Date: ' + expired + '\n'
+                                + 'Support Group: ' + process.env.GROUP);
+
+                    bot.sendMessage(chatId, link);
+                });
+            } else {
+                bot.sendMessage(chatId, "Username exist");
+            }
+        
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// Renew user
+bot.onText(/\/tr_renew (.+) (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let userName = match[1];
+    let day = match[2];
+    let today = moment().format("YYYY-MM-DD");
+    let expired = moment().add(day, 'days').format("YYYY-MM-DD");
+
+    try {
+        conn.query("UPDATE trojan SET user_start_date = ?, user_end_date = ? WHERE user_name = ?", [today, expired, userName], (err, result) => {
+            if (err) throw err;
+    
+            // console.log(result);
+        
+            bot.sendMessage(chatId, '## Trojan id renew success ## \n'
+                        + 'Username: ' + userName + '\n'
+                        + 'Start Date: ' + today + '\n'
+                        + 'Expired Date: ' + expired);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// Delete user
+bot.onText(/\/tr_del (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let userName = match[1];
+
+    try {
+        conn.query("DELETE FROM trojan WHERE user_name = ?", [userName], (err, result) => {
+            if (err) throw err;
+    
+            // console.log(result);
+        
+            bot.sendMessage(chatId, `${userName} removed!`);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
