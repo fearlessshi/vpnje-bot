@@ -530,12 +530,15 @@ bot.onText(/\/tr_info (.+)/, (msg, match) => {
 });
 
 // Register new user
-bot.onText(/\/tr_add (.+) (.+)/, (msg, match) => {
+bot.onText(/\/tr_add (.+) (.+) (.+)/, (msg, match) => {
     const chatId = msg.chat.id;
 
     let userName = match[1];
     let day = match[2];
     let link = `trojan://${userName}@tr01.vpnje.com:443`;
+    let link_digi = `trojan://${userName}@www.google.com.tr01.vpnje.com:443?sni=st.digi.com.my#vpnje-digi-${userName}`
+    let link_umobile = `trojan://${userName}@wap.u.com.my.tr01.vpnje.com:443?sni=wap.u.com.my#vpnje-umo-${userName}`
+    let link_maxis = `trojan://${userName}@api-cua.maxis.com.my.tr01.vpnje.com:443?sni=api-cua.maxis.com.my#vpnje-maxis-${userName}`
     let today = moment().format("YYYY-MM-DD");
     let expired = moment().add(day, 'days').format("YYYY-MM-DD");
 
@@ -552,14 +555,40 @@ bot.onText(/\/tr_add (.+) (.+)/, (msg, match) => {
                 }, (err, result) => {
                     if (err) throw err;
                     // console.log(result);
-                
-                    bot.sendMessage(chatId, '## Trojan registration success ## \n'
-                                + 'Username: ' + userName + '\n'
-                                + 'Start Date: ' + today + '\n'
-                                + 'Expired Date: ' + expired + '\n'
-                                + 'Support Group: ' + process.env.GROUP);
 
-                    bot.sendMessage(chatId, link);
+                    if (match[3] == "b") {
+                        bot.sendMessage(chatId, '## Trojan registration success ## \n'
+                        + 'Username: ' + userName + '\n'
+                        + 'Start Date: ' + today + '\n'
+                        + 'Expired Date: ' + expired + '\n'
+                        + 'Support Group: ' + process.env.GROUP);
+
+                        bot.sendMessage(chatId, link);
+                    } else if (match[3] == "d") {
+                        bot.sendMessage(chatId, '## Trojan registration success ## \n'
+                        + 'Username: ' + userName + '\n'
+                        + 'Start Date: ' + today + '\n'
+                        + 'Expired Date: ' + expired + '\n'
+                        + 'Support Group: ' + process.env.GROUP);
+
+                        setTimeout(() => { bot.sendMessage(chatId, link_digi); }, 1000);
+                    } else if (match[3] == "u") {
+                        bot.sendMessage(chatId, '## Trojan registration success ## \n'
+                        + 'Username: ' + userName + '\n'
+                        + 'Start Date: ' + today + '\n'
+                        + 'Expired Date: ' + expired + '\n'
+                        + 'Support Group: ' + process.env.GROUP);
+
+                        setTimeout(() => { bot.sendMessage(chatId, link_umobile); }, 1000);
+                    } else if (match[3] == "m") {
+                        bot.sendMessage(chatId, '## Trojan registration success ## \n'
+                        + 'Username: ' + userName + '\n'
+                        + 'Start Date: ' + today + '\n'
+                        + 'Expired Date: ' + expired + '\n'
+                        + 'Support Group: ' + process.env.GROUP);
+
+                        setTimeout(() => { bot.sendMessage(chatId, link_maxis); }, 1000);
+                    }
                 });
             } else {
                 bot.sendMessage(chatId, "Username exist");
