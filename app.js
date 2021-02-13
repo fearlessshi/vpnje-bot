@@ -64,7 +64,7 @@ bot.onText(/\/ovpn_info (.+)/, (msg, match) => {
     let userName = match[1];
 
     try {
-        conn.query("SELECT user_name, user_online, user_enable, user_start_date, user_end_date FROM user WHERE user_name = ?", [userName], (err, result) => {
+        conn.query("SELECT user_name, AES_DECRYPT(user_pass, 'vpnje') as user_pass, user_online, user_enable, user_start_date, user_end_date FROM user WHERE user_name = ?", [userName], (err, result) => {
             if (err) throw err;
     
             // console.log(result);
@@ -85,6 +85,7 @@ bot.onText(/\/ovpn_info (.+)/, (msg, match) => {
         
                     bot.sendMessage(chatId, '## Ovpn user info ## \n'
                             + 'Username: ' + row.user_name + '\n'
+                            + 'Password: ' + row.user_pass + '\n'
                             + 'Online: ' + row.user_online + '\n'
                             + 'Enable: ' + row.user_enable + '\n'
                             + 'Start Date: ' + startDate + '\n'
