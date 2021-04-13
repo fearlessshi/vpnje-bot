@@ -466,7 +466,6 @@ bot.onText(/\/v2_add (.+) (.+)/, (msg, match) => {
             } else {
                 bot.sendMessage(chatId, "Username exist");
             }
-        
         });
     } catch (error) {
         console.log(error);
@@ -483,15 +482,25 @@ bot.onText(/\/v2_renew (.+) (.+)/, (msg, match) => {
     let expired = moment().add(day, 'days').format("YYYY-MM-DD");
 
     try {
-        conn.query("UPDATE v2ray SET user_start_date = ?, user_end_date = ? WHERE user_name = ?", [today, expired, userName], (err, result) => {
+        conn.query("SELECT * FROM v2ray WHERE user_name = ?", [userName], (err, result) => {
             if (err) throw err;
     
             // console.log(result);
-        
-            bot.sendMessage(chatId, '## V2ray renew success ## \n'
-                        + 'Username: ' + userName + '\n'
-                        + 'Start Date: ' + today + '\n'
-                        + 'Expired Date: ' + expired);
+    
+            if (result.length === 0) {
+                bot.sendMessage(chatId, "Username not exist");
+            } else {
+                conn.query("UPDATE v2ray SET user_start_date = ?, user_end_date = ? WHERE user_name = ?", [today, expired, userName], (err, result) => {
+                    if (err) throw err;
+            
+                    // console.log(result);
+                
+                    bot.sendMessage(chatId, '## V2ray renew success ## \n'
+                                + 'Username: ' + userName + '\n'
+                                + 'Start Date: ' + today + '\n'
+                                + 'Expired Date: ' + expired);
+                });
+            }
         });
     } catch (error) {
         console.log(error);
@@ -631,15 +640,25 @@ bot.onText(/\/tr_renew (.+) (.+)/, (msg, match) => {
     let expired = moment().add(day, 'days').format("YYYY-MM-DD");
 
     try {
-        conn.query("UPDATE trojan SET user_start_date = ?, user_end_date = ? WHERE user_name = ?", [today, expired, userName], (err, result) => {
+        conn.query("SELECT * FROM trojan WHERE user_name = ?", [userName], (err, result) => {
             if (err) throw err;
     
             // console.log(result);
-        
-            bot.sendMessage(chatId, '## Trojan id renew success ## \n'
-                        + 'Username: ' + userName + '\n'
-                        + 'Start Date: ' + today + '\n'
-                        + 'Expired Date: ' + expired);
+    
+            if (result.length === 0) {
+                bot.sendMessage(chatId, "user not exist.");
+            } else {
+                conn.query("UPDATE trojan SET user_start_date = ?, user_end_date = ? WHERE user_name = ?", [today, expired, userName], (err, result) => {
+                    if (err) throw err;
+            
+                    // console.log(result);
+                
+                    bot.sendMessage(chatId, '## Trojan id renew success ## \n'
+                                + 'Username: ' + userName + '\n'
+                                + 'Start Date: ' + today + '\n'
+                                + 'Expired Date: ' + expired);
+                });
+            }
         });
     } catch (error) {
         console.log(error);
