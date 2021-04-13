@@ -357,15 +357,25 @@ bot.onText(/\/wg_renew (.+) (.+)/, (msg, match) => {
     let expired = moment().add(day, 'days').format("YYYY-MM-DD");
 
     try {
-        conn.query("UPDATE wireguard SET user_start_date = ?, user_end_date = ? WHERE user_name = ?", [today, expired, userName], (err, result) => {
+        conn.query("SELECT * FROM wireguard WHERE user_name = ?", [userName], (err, result) => {
             if (err) throw err;
     
             // console.log(result);
-        
-            bot.sendMessage(chatId, '## Wireguard renew success ## \n'
-                        + 'Username: ' + userName + '\n'
-                        + 'Start Date: ' + today + '\n'
-                        + 'Expired Date: ' + expired);
+    
+            if (result.length === 0) {
+                bot.sendMessage(chatId, "User not exist");
+            } else {
+                conn.query("UPDATE wireguard SET user_start_date = ?, user_end_date = ? WHERE user_name = ?", [today, expired, userName], (err, result) => {
+                    if (err) throw err;
+            
+                    // console.log(result);
+                
+                    bot.sendMessage(chatId, '## Wireguard renew success ## \n'
+                                + 'Username: ' + userName + '\n'
+                                + 'Start Date: ' + today + '\n'
+                                + 'Expired Date: ' + expired);
+                });
+            }
         });
     } catch (error) {
         console.log(error);
