@@ -36,7 +36,7 @@ try {
 
 // Get online user
 bot.onText(/\/ovpn_online/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     try {
         conn.query("SELECT COUNT(user_id) AS total FROM user WHERE user_online = 1", (err, result) => {
@@ -59,7 +59,7 @@ bot.onText(/\/ovpn_online/, (msg, match) => {
 
 // Get user info
 bot.onText(/\/ovpn_info (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
@@ -101,7 +101,7 @@ bot.onText(/\/ovpn_info (.+)/, (msg, match) => {
 
 // Register new user
 bot.onText(/\/ovpn_add (.+) (.+) (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
     let userPass = match[2];
@@ -142,7 +142,7 @@ bot.onText(/\/ovpn_add (.+) (.+) (.+)/, (msg, match) => {
 
 // Renew user
 bot.onText(/\/ovpn_renew (.+) (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
     let day = match[2];
@@ -167,7 +167,7 @@ bot.onText(/\/ovpn_renew (.+) (.+)/, (msg, match) => {
 
 // Block user
 bot.onText(/\/ovpn_block (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
@@ -186,7 +186,7 @@ bot.onText(/\/ovpn_block (.+)/, (msg, match) => {
 
 // Unblock user
 bot.onText(/\/ovpn_unblock (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
@@ -205,7 +205,7 @@ bot.onText(/\/ovpn_unblock (.+)/, (msg, match) => {
 
 // Delete user
 bot.onText(/\/ovpn_del (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
@@ -224,7 +224,7 @@ bot.onText(/\/ovpn_del (.+)/, (msg, match) => {
 
 // Reset User pass
 bot.onText(/\/ovpn_reset (.+) (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
     let userPass = match[2];
@@ -246,7 +246,7 @@ bot.onText(/\/ovpn_reset (.+) (.+)/, (msg, match) => {
 
 // Block all test account
 bot.onText(/\/ovpn_block_test/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     // console.log(userPass);
 
@@ -268,7 +268,7 @@ bot.onText(/\/ovpn_block_test/, (msg, match) => {
 
 // Get user info
 bot.onText(/\/wg_info (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
@@ -299,7 +299,7 @@ bot.onText(/\/wg_info (.+)/, (msg, match) => {
 
 // Register new user
 bot.onText(/\/wg_add (.+) (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
     let day = match[2];
@@ -338,7 +338,7 @@ bot.onText(/\/wg_add (.+) (.+)/, (msg, match) => {
 
 // Renew user
 bot.onText(/\/wg_renew (.+) (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
     let day = match[2];
@@ -363,7 +363,7 @@ bot.onText(/\/wg_renew (.+) (.+)/, (msg, match) => {
 
 // Delete user
 bot.onText(/\/wg_del (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
@@ -384,7 +384,7 @@ bot.onText(/\/wg_del (.+)/, (msg, match) => {
 // V2ray
 // Get user info
 bot.onText(/\/v2_info (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
@@ -415,7 +415,7 @@ bot.onText(/\/v2_info (.+)/, (msg, match) => {
 
 // Register new user
 bot.onText(/\/v2_add (.+) (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
     let day = match[2];
@@ -454,7 +454,7 @@ bot.onText(/\/v2_add (.+) (.+)/, (msg, match) => {
 
 // Renew user
 bot.onText(/\/v2_renew (.+) (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
     let day = match[2];
@@ -479,7 +479,7 @@ bot.onText(/\/v2_renew (.+) (.+)/, (msg, match) => {
 
 // Delete user
 bot.onText(/\/v2_del (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
@@ -500,7 +500,7 @@ bot.onText(/\/v2_del (.+)/, (msg, match) => {
 // Trojan
 // Get user info
 bot.onText(/\/tr_info (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
@@ -531,7 +531,7 @@ bot.onText(/\/tr_info (.+)/, (msg, match) => {
 
 // Register new user
 bot.onText(/\/tr_add (.+) (.+) (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
     let day = match[2];
@@ -602,7 +602,7 @@ bot.onText(/\/tr_add (.+) (.+) (.+)/, (msg, match) => {
 
 // Renew user
 bot.onText(/\/tr_renew (.+) (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
     let day = match[2];
@@ -627,7 +627,7 @@ bot.onText(/\/tr_renew (.+) (.+)/, (msg, match) => {
 
 // Delete user
 bot.onText(/\/tr_del (.+)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    const chatId = process.env.ADMIN_GROUP;
 
     let userName = match[1];
 
