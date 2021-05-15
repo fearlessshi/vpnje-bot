@@ -166,7 +166,8 @@ bot.onText(/\/ovpn_renew (.+) (.+)/, (msg, match) => {
                     bot.sendMessage(chatId, '## Ovpn renew success ## \n'
                                 + 'Username: ' + userName + '\n'
                                 + 'Start Date: ' + today + '\n'
-                                + 'Expired Date: ' + expired);
+                                + 'Expired Date: ' + expired + '\n'
+                                + 'Support Group: ' + process.env.GROUP);
                 });
             }
         
@@ -298,7 +299,8 @@ bot.onText(/\/wg_info (.+)/, (msg, match) => {
                     bot.sendMessage(chatId, '## Wireguard user info ## \n'
                             + 'Username: ' + row.user_name + '\n'
                             + 'Start Date: ' + moment(row.user_start_date).format("YYYY-MM-DD") + '\n'
-                            + 'Expired Date: ' + moment(row.user_end_date).format("YYYY-MM-DD"));
+                            + 'Expired Date: ' + moment(row.user_end_date).format("YYYY-MM-DD") + '\n'
+                            + 'Server: ' + row.server_name);
                 });
             }
         
