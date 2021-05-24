@@ -368,8 +368,13 @@ bot.onText(/\/wg_renew (.+) (.+)/, (msg, match) => {
                 bot.sendMessage(chatId, "User not exist");
             } else {
                 // Get server name from last query
-                let row = result[key];
-                let srvName = row.server_name;
+                let srvName = ''
+                Object.keys(result).forEach((key) => {
+                    let row = result[key];
+                    srvName = row.server_name;
+        
+                });
+                
 
                 conn.query("UPDATE wireguard SET user_start_date = ?, user_end_date = ? WHERE user_name = ?", [today, expired, userName], (err, result) => {
                     if (err) throw err;
